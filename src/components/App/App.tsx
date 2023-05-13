@@ -39,13 +39,9 @@ function App() {
     }
   };
 
-  const getData = async () => {
-    dispatch(fetchStocks());
-  };
-
   useEffect(() => {
-    getData();
-  }, []);
+      dispatch(fetchStocks());
+  }, [dispatch]);
 
   return (
     <main className={styles.root}>
