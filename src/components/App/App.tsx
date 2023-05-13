@@ -4,8 +4,8 @@ import cn from "classnames";
 
 import { useAppDispatch } from "../../store/store";
 import { useSelector } from "react-redux";
-import { getItems, getLoadingStatus } from "../../store/quotes/selectors";
-import { fetchStocks } from "../../store/quotes/asynqActions";
+import { getItems, getLoadingStatus } from "../../store/stocks/selectors";
+import { fetchStocks } from "../../store/stocks/asynqActions";
 
 import TableRow from "../TableRow/TableRow";
 import TableContent from "../TableContent/TableContent";
