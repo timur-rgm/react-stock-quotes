@@ -1,8 +1,8 @@
 import { AxiosResponse } from "axios";
 import { http } from "./http";
-import { StocksType } from "../types/stocks";
+import { StockType } from "../types/stocks";
 
-export const getStockQuotes = async (): Promise<AxiosResponse<StocksType>> => {
+export const getStockQuotes = async (): Promise<AxiosResponse<StockType[]>> => {
   return await http.get("/", {
     params: {
       collectionName: "Airlines",

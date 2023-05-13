@@ -1,6 +1,4 @@
-export type StocksType = StockType[];
-
-type StockType = {
+export type StockType = {
   avgTotalVolume: number;
   calculationPrice: string;
   change: number;

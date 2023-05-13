@@ -3,23 +3,26 @@ import { useEffect, useState } from "react";
 import cn from "classnames";
 
 import { useAppDispatch } from "../../store/store";
-import { getQuotes } from "../../store/quotes/asynqActions";
 import { useSelector } from "react-redux";
 import { getItems, getLoadingStatus } from "../../store/quotes/selectors";
-import styles from "./App.module.scss";
-import arrowIcon from "../../assets/images/arrow-icon.svg";
+import { fetchStocks } from "../../store/quotes/asynqActions";
+import ButtonIcon from "../ButtonIcon/ButtonIcon";
 import { LoadingStatuses } from "../../const";
 
+import styles from "./App.module.scss";
+
+
 function App() {
-  const quotes = useSelector(getItems);
+  const [displayedStocks, setDisplayedStocks] = useState({ from: 0, to: 10 });
+
+  const stocks = useSelector(getItems);
   const loadingStatus = useSelector(getLoadingStatus);
+
   const dispatch = useAppDispatch();
 
-  const [displayedQuotes, setDisplayedQuotes] = useState({ from: 0, to: 10 });
-
   const handlePrevButtonClick = () => {
-    if (displayedQuotes.from > 0) {
-      setDisplayedQuotes((prev) => ({
+    if (displayedStocks.from > 0) {
+      setDisplayedStocks((prev) => ({
         from: prev.from - 10,
         to: prev.to - 10,
       }));
@@ -27,8 +30,8 @@ function App() {
   };
 
   const handleNextButtonClick = () => {
-    if (!!quotes && displayedQuotes.to < quotes.length) {
-      setDisplayedQuotes((prev) => ({
+    if (!!stocks && displayedStocks.to < stocks.length) {
+      setDisplayedStocks((prev) => ({
         from: prev.from + 10,
         to: prev.to + 10,
       }));
@@ -36,7 +39,7 @@ function App() {
   };
 
   const getData = async () => {
-    dispatch(getQuotes());
+    dispatch(fetchStocks());
   };
 
   useEffect(() => {
@@ -72,8 +75,8 @@ function App() {
             )}
 
             {loadingStatus === LoadingStatuses.Success &&
-              quotes.map(({ companyName, latestPrice, ytdChange }, i) => {
-                if (i >= displayedQuotes.from && i < displayedQuotes.to) {
+              stocks.map(({ companyName, latestPrice, ytdChange }, i) => {
+                if (i >= displayedStocks.from && i < displayedStocks.to) {
                   return (
                     <tr key={companyName + i}>
                       <td>{i + 1}</td>
@@ -113,22 +116,21 @@ function App() {
           </tbody>
         </table>
 
-        <button
-          aria-label="Previous button"
-          className={cn(styles.button, styles.prev)}
-          disabled={displayedQuotes.from === 0}
+        <ButtonIcon
+          ariaLabel="Previous button"
+          classes={{ button: cn(styles.button, styles.prev)}}
+          icon="arrow-prev"
+          isDisabled={displayedStocks.from === 0}
           onClick={handlePrevButtonClick}
-        >
-          <img src={arrowIcon} alt="Previous arrow icon" />
-        </button>
-        <button
-          aria-label="Next button"
-          className={cn(styles.button, styles.next)}
-          disabled={displayedQuotes.to === quotes?.length}
+        />
+
+        <ButtonIcon
+          ariaLabel="Next button"
+          classes={{ button: cn(styles.button, styles.next)}}
+          icon="arrow-next"
+          isDisabled={displayedStocks.to === stocks?.length}
           onClick={handleNextButtonClick}
-        >
-          <img src={arrowIcon} alt="Next arrow icon" />
-        </button>
+        />
       </div>
     </main>
   );

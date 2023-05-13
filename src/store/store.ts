@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 
 export const store = configureStore({
   reducer: {
-    quotes: quotesReducer,
+    stocks: quotesReducer,
   },
 });
 

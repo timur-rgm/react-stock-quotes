@@ -1,38 +1,37 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { getQuotes } from './asynqActions'
+import { fetchStocks } from "./asynqActions";
 import { LoadingStatuses } from "../../const";
-import { StocksType } from "../../types/stocks";
+import { StockType } from "../../types/stocks";
 
 export interface CounterState {
-  quotes: StocksType;
-  loadingStatus: LoadingStatuses
+  stocks: StockType[];
+  loadingStatus: LoadingStatuses;
 }
 
 const initialState: CounterState = {
-  quotes: [],
-  loadingStatus: LoadingStatuses.Loading
+  stocks: [],
+  loadingStatus: LoadingStatuses.Loading,
 };
 
 export const quotesSlice = createSlice({
-  name: "quotes",
+  name: "stocks",
   initialState,
-  reducers: {
-  },
+  reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(getQuotes.pending, (state) => {
-      state.quotes = [];
+    builder.addCase(fetchStocks.pending, (state) => {
+      state.stocks = [];
       state.loadingStatus = LoadingStatuses.Loading;
     });
     builder.addCase(
-      getQuotes.fulfilled,
-      (state, action: PayloadAction<StocksType>) => {
-        state.quotes = action.payload;
+      fetchStocks.fulfilled,
+      (state, action: PayloadAction<StockType[]>) => {
+        state.stocks = action.payload;
         state.loadingStatus = LoadingStatuses.Success;
       }
     );
-    builder.addCase(getQuotes.rejected, (state) => {
-      state.quotes = [];
+    builder.addCase(fetchStocks.rejected, (state) => {
+      state.stocks = [];
       state.loadingStatus = LoadingStatuses.Error;
     });
   },
