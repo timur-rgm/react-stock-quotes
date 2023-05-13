@@ -14,7 +14,7 @@ const initialState: CounterState = {
   loadingStatus: LoadingStatuses.Loading,
 };
 
-export const quotesSlice = createSlice({
+export const stocksSlice = createSlice({
   name: "stocks",
   initialState,
   reducers: {},
@@ -37,4 +37,4 @@ export const quotesSlice = createSlice({
   },
 });
 
-export default quotesSlice.reducer;
+export default stocksSlice.reducer;

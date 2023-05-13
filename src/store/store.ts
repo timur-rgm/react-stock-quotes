@@ -1,10 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
-import quotesReducer from "./quotes/quotesSlice";
+import stocksReducer from "./stocks/stocksSlice";
 import { useDispatch } from "react-redux";
 
 export const store = configureStore({
   reducer: {
-    stocks: quotesReducer,
+    stocks: stocksReducer,
   },
 });
 
