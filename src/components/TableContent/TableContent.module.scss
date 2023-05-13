@@ -1,0 +1,15 @@
+.change {
+  &.inc {
+    color: var(--color-yellowgreen);
+  }
+
+  &.dec {
+    color: var(--color-tomato);
+  }
+}
+
+.empty {
+  font-size: 13px;
+  font-style: italic;
+  color: var(--color-gray);
+}

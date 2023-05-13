@@ -6,11 +6,12 @@ import { useAppDispatch } from "../../store/store";
 import { useSelector } from "react-redux";
 import { getItems, getLoadingStatus } from "../../store/quotes/selectors";
 import { fetchStocks } from "../../store/quotes/asynqActions";
+
+import TableRow from "../TableRow/TableRow";
+import TableContent from "../TableContent/TableContent";
 import ButtonIcon from "../ButtonIcon/ButtonIcon";
 import { LoadingStatuses } from "../../const";
-
 import styles from "./App.module.scss";
-
 
 function App() {
   const [displayedStocks, setDisplayedStocks] = useState({ from: 0, to: 10 });
@@ -52,73 +53,41 @@ function App() {
         <table className={styles.table}>
           <caption className={styles.title}>Акции авиакомпаний</caption>
           <tbody>
-            <tr className={styles.header}>
-              <th>№</th>
-              <th>Название</th>
-              <th colSpan={2}>Цена</th>
-            </tr>
+            <TableRow
+              classes={{ row: styles.header }}
+              cellData={[
+                { data: "№" },
+                { data: "Название" },
+                { data: "Цена", colSpan: 2 },
+              ]}
+              isHeader
+            />
 
             {loadingStatus === LoadingStatuses.Loading && (
-              <tr>
-                <td className={styles.message} colSpan={4}>
-                  Загрузка...
-                </td>
-              </tr>
+              <TableRow
+                classes={{ cell: styles.message }}
+                cellData={[{ data: "Загрузка...", colSpan: 4 }]}
+              />
             )}
 
             {loadingStatus === LoadingStatuses.Error && (
-              <tr>
-                <td className={styles.message} colSpan={4}>
-                  Ошибка. Проверьте подключение к сети
-                </td>
-              </tr>
+              <TableRow
+                classes={{ cell: styles.message }}
+                cellData={[
+                  { data: "Ошибка. Проверьте подключение к сети", colSpan: 4 },
+                ]}
+              />
             )}
 
-            {loadingStatus === LoadingStatuses.Success &&
-              stocks.map(({ companyName, latestPrice, ytdChange }, i) => {
-                if (i >= displayedStocks.from && i < displayedStocks.to) {
-                  return (
-                    <tr key={companyName + i}>
-                      <td>{i + 1}</td>
-                      <td>{companyName}</td>
-
-                      {!!latestPrice ? (
-                        <>
-                          <td>${latestPrice}</td>
-                          <td>
-                            <span
-                              className={cn(styles.change, {
-                                [styles.inc]: ytdChange > 0,
-                                [styles.dec]: ytdChange < 0,
-                              })}
-                            >
-                              {ytdChange > 0 && "+"}
-                              {ytdChange.toFixed(4)}
-                            </span>
-                          </td>
-                        </>
-                      ) : (
-                        <>
-                          <td>
-                            <span className={styles.empty}>Нет данных</span>
-                          </td>
-                          <td>
-                            <span className={styles.empty}>Нет данных</span>
-                          </td>
-                        </>
-                      )}
-                    </tr>
-                  );
-                }
-
-                return null;
-              })}
+            {loadingStatus === LoadingStatuses.Success && (
+              <TableContent stocks={stocks} displayedStocks={displayedStocks} />
+            )}
           </tbody>
         </table>
 
         <ButtonIcon
           ariaLabel="Previous button"
-          classes={{ button: cn(styles.button, styles.prev)}}
+          classes={{ button: cn(styles.button, styles.prev) }}
           icon="arrow-prev"
           isDisabled={displayedStocks.from === 0}
           onClick={handlePrevButtonClick}
@@ -126,7 +95,7 @@ function App() {
 
         <ButtonIcon
           ariaLabel="Next button"
-          classes={{ button: cn(styles.button, styles.next)}}
+          classes={{ button: cn(styles.button, styles.next) }}
           icon="arrow-next"
           isDisabled={displayedStocks.to === stocks?.length}
           onClick={handleNextButtonClick}

@@ -66,22 +66,6 @@
   }
 }
 
-.change {
-  &.inc {
-    color: yellowgreen;
-  }
-
-  &.dec {
-    color: tomato;
-  }
-}
-
-.empty {
-  font-size: 13px;
-  font-style: italic;
-  color: var(--color-gray);
-}
-
 .message {
   color: var(--color-gray);
 }
