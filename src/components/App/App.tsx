@@ -2,15 +2,19 @@ import { useEffect, useState } from "react";
 
 import cn from "classnames";
 
-import { getStockQuotes } from "../../api/getStockQuotes";
-import { StocksType } from "../../types/stocks";
+import { useAppDispatch } from "../../store/store";
+import { getQuotes } from "../../store/quotes/asynqActions";
+import { useSelector } from "react-redux";
+import { getItems, getLoadingStatus } from "../../store/quotes/selectors";
 import styles from "./App.module.scss";
 import arrowIcon from "../../assets/images/arrow-icon.svg";
+import { LoadingStatuses } from "../../const";
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [isError, setIsError] = useState(false);
-  const [quotes, setQuotes] = useState<StocksType>();
+  const quotes = useSelector(getItems);
+  const loadingStatus = useSelector(getLoadingStatus);
+  const dispatch = useAppDispatch();
+
   const [displayedQuotes, setDisplayedQuotes] = useState({ from: 0, to: 10 });
 
   const handlePrevButtonClick = () => {
@@ -32,14 +36,7 @@ function App() {
   };
 
   const getData = async () => {
-    try {
-      const { data } = await getStockQuotes();
-      setQuotes(data);
-    } catch {
-      setIsError(true);
-    } finally {
-      setIsLoading(false);
-    }
+    dispatch(getQuotes());
   };
 
   useEffect(() => {
@@ -58,7 +55,7 @@ function App() {
               <th colSpan={2}>Цена</th>
             </tr>
 
-            {isLoading && (
+            {loadingStatus === LoadingStatuses.Loading && (
               <tr>
                 <td className={styles.message} colSpan={4}>
                   Загрузка...
@@ -66,7 +63,7 @@ function App() {
               </tr>
             )}
 
-            {isError && (
+            {loadingStatus === LoadingStatuses.Error && (
               <tr>
                 <td className={styles.message} colSpan={4}>
                   Ошибка. Проверьте подключение к сети
@@ -74,7 +71,7 @@ function App() {
               </tr>
             )}
 
-            {!!quotes &&
+            {loadingStatus === LoadingStatuses.Success &&
               quotes.map(({ companyName, latestPrice, ytdChange }, i) => {
                 if (i >= displayedQuotes.from && i < displayedQuotes.to) {
                   return (
@@ -117,15 +114,17 @@ function App() {
         </table>
 
         <button
-          className={cn(styles.button, styles.prev)}
           aria-label="Previous button"
+          className={cn(styles.button, styles.prev)}
+          disabled={displayedQuotes.from === 0}
           onClick={handlePrevButtonClick}
         >
           <img src={arrowIcon} alt="Previous arrow icon" />
         </button>
         <button
-          className={cn(styles.button, styles.next)}
           aria-label="Next button"
+          className={cn(styles.button, styles.next)}
+          disabled={displayedQuotes.to === quotes?.length}
           onClick={handleNextButtonClick}
         >
           <img src={arrowIcon} alt="Next arrow icon" />
